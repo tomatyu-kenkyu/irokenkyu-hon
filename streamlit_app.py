@@ -13,7 +13,7 @@ def generate_screenshot_api_url(customer_key, secret_phrase, options):
 
 st.title("Screenshot Machine Viewer")
 # 入力欄
-customer_key = st.text_input("Customer Key")
+customer_key = "82ef7e"
 secret_phrase = st.text_input("Secret Phrase（任意）", value="")
 target_url = st.text_input("スクリーンショットURL", value="https://www.google.com")
 if st.button("スクリーンショット取得"):
