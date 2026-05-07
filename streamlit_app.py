@@ -1,35 +1,41 @@
 import streamlit as st
 from google import genai
+from PIL import Image
 
-# タイトル
-st.title("Gemini AI テスト")
+st.title("Gemini OCR")
 
-# APIキー入力
-api_key = st.text_input("Google AI APIキーを入力", type="password")
+# APIキー
+api_key = st.text_input("Google AI APIキー", type="password")
 
-# 質問入力
-prompt = st.text_area(
-    "質問を入力してください",
-    "Explain how AI works in a few words"
+# 画像アップロード
+uploaded_file = st.file_uploader(
+    "画像をアップロード",
+    type=["png", "jpg", "jpeg"]
 )
 
-# 実行ボタン
-if st.button("送信"):
-    if not api_key:
-        st.warning("APIキーを入力してください")
-    else:
+if uploaded_file and api_key:
+
+    # 画像表示
+    image = Image.open(uploaded_file)
+    st.image(image, caption="アップロード画像", use_container_width=True)
+
+    if st.button("OCR実行"):
+
         try:
-            # クライアント作成
+            # Geminiクライアント
             client = genai.Client(api_key=api_key)
 
-            # Geminiへ送信
+            # OCR実行
             response = client.models.generate_content(
-                model="gemini-3-flash-preview",
-                contents=prompt,
+                model="gemini-2.5-flash",
+                contents=[
+                    image,
+                    "この画像内の文字をすべて抽出してください。"
+                ]
             )
 
             # 結果表示
-            st.subheader("AIの回答")
+            st.subheader("OCR結果")
             st.write(response.text)
 
         except Exception as e:
